@@ -1,7 +1,7 @@
 import cv2 
 import numpy as np
 
-img=cv2.imread("/Users/apple/Desktop/code/Digitalimageprocessing/wp3013104.jpeg")
+img=cv2.imread("wp3013104.jpeg")
 
 size=img.shape
 height = img.shape[0]
