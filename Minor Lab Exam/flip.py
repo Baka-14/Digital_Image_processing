@@ -1,0 +1,13 @@
+import cv2
+img=cv2.imread('wp3013104.jpeg')
+fliph_img=cv2.flip(img,1)
+cv2.imshow("flip horizontal",fliph_img)
+cv2.waitKey(0)
+flipv_img=cv2.flip(img,0)
+cv2.imshow("flip vertical",fliph_img)
+cv2.waitKey(0)
+flip_img=cv2.flip(img,-1)
+cv2.imshow("flip horizontal and vertical",flip_img)
+cv2.imshow("flip vertical",fliph_img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
