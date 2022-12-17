@@ -1,24 +1,27 @@
-import cv2 
-from PIL import Image
-import numpy as np
-from scipy import ndimage
-from skimage.feature import peak_local_max
-from skimage.segmentation import watershed
+import cv2;
+import numpy as np;
+import matplotlib.pyplot as plt
 
-image = cv2.imread("picture.png")
+im_in = cv2.imread("/Users/apple/Desktop/code/Digital_Image_processing/coins.jpeg", cv2.IMREAD_GRAYSCALE)
+th, im_th = cv2.threshold(im_in, 220, 255, cv2.THRESH_BINARY_INV)
+im_floodfill = im_th.copy()
+h, w = im_th.shape[:2]
+mask = np.zeros((h+2, w+2), np.uint8)
 
-gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-darker = cv2.equalizeHist(gray)
-ret,thresh = cv2.threshold(darker,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-newimg = cv2.bitwise_not(thresh)
+cv2.floodFill(im_floodfill, mask, (0,0), 255)
+im_floodfill_inv = cv2.bitwise_not(im_floodfill)
+im_out = im_th | im_floodfill_inv
 
-im2, contours, hierarchy = cv2.findContours(newimg,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+plt.imshow(im_in)                                                                                                                                                                                                                                                                                                                                                                                
+plt.title('Original Image')                               
+plt.show()
+plt.imshow(im_floodfill)
+plt.title('Floodfilled Image')
+plt.show()
+plt.imshow(im_floodfill_inv)
+plt.title('Inverted Floodfilled Image')
+plt.show()
+plt.imshow(im_out)
+plt.title('Foreground')
+plt.show()
 
-for cnt in contours:
-    cv2.drawContours(newimg,[cnt],0,255,-1) 
-
-D = ndimage.distance_transform_edt(newimg)
-localMax = peak_local_max(D, indices=False, min_distance=20, labels=thresh)
-markers = ndimage.label(localMax, structure=np.ones((3, 3)))[0]
-labels = watershed(-D, markers, mask=newimg)
-print("[INFO] {} unique segments found".format(len(np.unique(labels)) - 1))
